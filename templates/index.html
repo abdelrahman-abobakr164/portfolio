@@ -64,7 +64,7 @@
 
             <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
               <div class="hero-text">
-                <h2>Abderahman Abobakr</h2>
+                <h2>Abderahman Abobakr Aly</h2>
                 <p class="lead">I'm a <span class="typed" data-typed-items="Back End Developer, Web Developer,"></span></p>
                 <p class="description">Django Back-End Developer skilled in building and optimizing web applications. Experienced with REST APIs, relational databases, and cloud deployment. Passionate about clean code and problem-solving.</p>
 
@@ -84,7 +84,9 @@
               <div class="hero-visual">
                 <div class="profile-container">
                   <div class="profile-background"></div>
-                  <img src="{% static 'assets/mi.jpg' %}" alt="Alexander Chen" class="profile-image">
+                  <a href="{% static 'assets/fullmi.jpg' %}">
+                    <img src="{% static 'assets/mi2.jpg' %}" alt="Alexander Chen" class="profile-image">
+                  </a>
                 </div>
               </div>
             </div>
@@ -113,7 +115,7 @@
               </div>
 
               <div class="profile-content">
-                <h3>Abdelrahman Abobakr</h3>
+                <h3>Abderahman Abobakr Aly</h3>
                 <p class="profession">Back End &amp; Developer</p>
 
                 <div class="contact-links">
@@ -145,16 +147,15 @@
                 <p>Django Back-End Developer skilled in building and optimizing web applications. Experienced with REST APIs, relational databases, and cloud deployment. Passionate about clean code and problem-solving.</p>
               </div>
 
-
               <div class="details-grid">
                 <div class="detail-row">
                   <div class="detail-item">
                     <span class="detail-label">Specialization</span>
-                    <span class="detail-value">Back End Web Developer &amp; Development</span>
+                    <span class="detail-value">Web Development</span>
                   </div>
                   <div class="detail-item">
                     <span class="detail-label">Experience Level</span>
-                    <span class="detail-value">Mid</span>
+                    <span class="detail-value">Mid</span> 
                   </div>
                 </div>
                 <div class="detail-row">
@@ -170,7 +171,7 @@
               </div>
 
               <div class="cta-section">
-                <a href="static/assets/Abderahman-Resume.pdf" download="Abderahman_Resume.pdf" class="btn btn-primary">
+                <a href="{% static 'assets/AbdelrahmanAbobakrResume.pdf' %}" download="Abdelrahman_Abobakr_Resume.pdf" class="btn btn-primary">
                   <i class="bi bi-download"></i>
                   Download Resume
                 </a>
@@ -218,7 +219,7 @@
                 {% for i in works %}
                   <div class="col-lg-6 col-md-6 portfolio-item isotope-item filter-{{i.category}}">
                     <div class="portfolio-wrap">
-                      <img src="{{i.image.url}}" class="img-fluid" alt="Portfolio Image" loading="lazy">
+                      <img src="{% static '{{i.image.url}}' %}" class="img-fluid" alt="Portfolio Image" loading="lazy">
                       <div class="portfolio-info">
                         <div class="content">
                           <span class="category">{{i.category}}</span>
@@ -303,13 +304,12 @@
                   </div>
 
                   <div class="col-12 text-center">
-                    {% if msg %}<p style='color:{% if msg == "Don't Mess" %} red {% else %} green {% endif %}'> {{msg}} </p>{% endif %}
+                    <div id="response"></div>
                     <button type="submit" class="btn">Send Message</button>
                   </div>
 
                 </div>
               </form>
-
             </div>
           </div>
 
@@ -325,6 +325,37 @@
 
   <div id="preloader"></div>
 
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", function(e){
+        e.preventDefault();
+
+        let form = e.target;
+        let formData = new FormData(form);
+
+        fetch("{% url 'index' %}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let responseDiv = document.getElementById("response");
+            if(data.success){
+                responseDiv.innerHTML = "<p style='color:green'>" + data.message + "</p>";
+                form.reset();
+            } else {
+                if(data.errors){
+                    responseDiv.innerHTML = "<p style='color:red'>" + JSON.stringify(data.errors) + "</p>";
+                } else {
+                    responseDiv.innerHTML = "<p style='color:red'>" + data.message + "</p>";
+                }
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+  </script>
   <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
   <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>

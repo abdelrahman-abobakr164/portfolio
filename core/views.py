@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from .models import *
 from .forms import ContactForm
@@ -6,7 +7,6 @@ from .forms import ContactForm
 
 def index(request):
     works = Work.objects.all()
-    msg = ''
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -16,12 +16,11 @@ def index(request):
                 from_email=form.cleaned_data['email'],
                 recipient_list=['abdelrahmanboda164@gmail.com'],
                 fail_silently=False
-                
             )
-            msg += "Your Message have been Sent Successfully"
+            return JsonResponse({"success": True, "message": "Thanks i'll get back to you soon."})
         else:
-            msg += "Don't Mess"
-    return render(request, 'index.html', {'works':works, 'msg':msg})
+            return JsonResponse({"success": False, "message": "Don't Mess"}, status=400)
+    return render(request, 'index.html', {'works':works})
 
 def detail(request, slug):
     work = get_object_or_404(Work, slug=slug)
