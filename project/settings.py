@@ -77,10 +77,11 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
 import dj_database_url
 DATABASES = {
     "default": dj_database_url.config(
-        default=env("DATABASE_URL")  # Railway will provide this automatically
+        default=env("DATABASE_URL")
     )
 }
 
