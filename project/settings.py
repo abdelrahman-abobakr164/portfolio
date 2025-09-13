@@ -1,18 +1,11 @@
 from environ import Env
 import os
 from pathlib import Path
+import cloudinary
 
 env = Env()
 Env.read_env()
 ENVIRONMENT = env("ENVIRONMENT", default="production")
-
-import cloudinary
-
-cloudinary.config( 
-    cloud_name = os.getenv("CLOUD_NAME"), 
-    api_key = os.getenv("CLOUDINARY_API_KEY"), 
-    api_secret = os.getenv("CLOUDINARY_API_SECRET") 
-)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,11 +17,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
-DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", "localhost").split(",")
+if ENVIRONMENT == "development":
+    DEBUG = True
+else:
+    ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+    DEBUG = False
+
 
 CSRF_TRUSTED_ORIGINS = ["https://eager-badly-crayfish.ngrok-free.app"]
+
+cloudinary.config( 
+    cloud_name = os.getenv("CLOUD_NAME"), 
+    api_key = os.getenv("CLOUDINARY_API_KEY"), 
+    api_secret = os.getenv("CLOUDINARY_API_SECRET") 
+)
 
 
 # Application definition
@@ -79,14 +82,25 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-import dj_database_url
-DATABASES = {
-    "default": dj_database_url.config(
-        default=env("DATABASE_URL")
-    )
-}
 
-
+if ENVIRONMENT == "development":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DB_NAME"),
+            "USER": env("DB_USER"),
+            "PASSWORD": env("DB_PASSWORD"),
+            "HOST": env("DB_HOST"),
+            "PORT": env("DB_PORT"),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -123,10 +137,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type

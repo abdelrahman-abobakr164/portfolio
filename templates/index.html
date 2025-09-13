@@ -36,7 +36,6 @@
           <li><a href="#hero" class="active"><i class="bi bi-house navicon"></i>Home</a></li>
           <li><a href="#about"><i class="bi bi-person navicon"></i> About</a></li>
           <li><a href="#portfolio"><i class="bi bi-images navicon"></i> Portfolio</a></li>
-          <li><a href="#contact"><i class="bi bi-envelope navicon"></i> Contact</a></li>
         </ul>
       </nav>
 
@@ -70,7 +69,6 @@
 
                 <div class="hero-actions">
                   <a href="#portfolio" class="btn btn-primary">View My Work</a>
-                  <a href="#contact" class="btn btn-outline">Get In Touch</a>
                 </div>
 
                 <div class="social-links">
@@ -155,7 +153,7 @@
                   </div>
                   <div class="detail-item">
                     <span class="detail-label">Experience Level</span>
-                    <span class="detail-value">Mid</span> 
+                    <span class="detail-value">Mid - Senior</span> 
                   </div>
                 </div>
                 <div class="detail-row">
@@ -242,82 +240,6 @@
 
     </section><!-- /Portfolio Section -->
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section">
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Contact</h2>
-      </div><!-- End Section Title -->
-
-      <div class="container">
-
-        <div class="row g-4 g-lg-5">
-          <div class="col-lg-5">
-            <div class="info-box">
-              <h3 style='margin-bottom: 50px'>Contact Info</h3>
-
-              <div class="info-item">
-                <div class="icon-box">
-                  <i class="bi bi-geo-alt"></i>
-                </div>
-                <div class="content">
-                  <h4>Location</h4>
-                  <p>Egypt, Giza, Haram, Omraneya</p>
-                </div>
-              </div>
-
-              <div class="info-item">
-                <div class="icon-box">
-                  <i class="bi bi-telephone"></i>
-                </div>
-                <div class="content">
-                  <h4>Phone Number</h4>
-                  <p>+20 1096663306</p>
-                </div>
-              </div>
-
-              <div class="info-item">
-                <div class="icon-box">
-                  <i class="bi bi-envelope"></i>
-                </div>
-                <div class="content">
-                  <h4>Email Address</h4>
-                  <a href="mailto:abdelrahmanboda164@gmail.com">abdelrahmanboda164@gmail.com</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-7">
-            <div class="contact-form">
-              <h3>Get In Touch</h3>
-
-              <form method="post" id='contactForm'>
-                {% csrf_token %}
-                <div class="row gy-4">
-                  <div class="col-md-12 ">
-                    <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-                  </div>
-
-                  <div class="col-12">
-                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-                  </div>
-
-                  <div class="col-12 text-center">
-                    <div id="response"></div>
-                    <button type="submit" class="btn">Send Message</button>
-                  </div>
-
-                </div>
-              </form>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section><!-- /Contact Section -->
 
   </main>
 
@@ -325,37 +247,6 @@
 
   <div id="preloader"></div>
 
-  <script>
-    document.getElementById("contactForm").addEventListener("submit", function(e){
-        e.preventDefault();
-
-        let form = e.target;
-        let formData = new FormData(form);
-
-        fetch("{% url 'index' %}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            let responseDiv = document.getElementById("response");
-            if(data.success){
-                responseDiv.innerHTML = "<p style='color:green'>" + data.message + "</p>";
-                form.reset();
-            } else {
-                if(data.errors){
-                    responseDiv.innerHTML = "<p style='color:red'>" + JSON.stringify(data.errors) + "</p>";
-                } else {
-                    responseDiv.innerHTML = "<p style='color:red'>" + data.message + "</p>";
-                }
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    });
-  </script>
   <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
   <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
