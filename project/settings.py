@@ -21,7 +21,7 @@ SECRET_KEY = env("SECRET_KEY")
 if ENVIRONMENT == "development":
     DEBUG = True
 else:
-    ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+    ALLOWED_HOSTS = ['*']
     DEBUG = False
 
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,16 +92,20 @@ if ENVIRONMENT == "development":
         }
     }
 else:
+    import dj_database_url
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DB_NAME"),
-            "USER": env("DB_USER"),
-            "PASSWORD": env("DB_PASSWORD"),
-            "HOST": env("DB_HOST"),
-            "PORT": env("DB_PORT"),
-        }
+        "default": dj_database_url.config(default="sqlite:///db.sqlite3", conn_max_age=600)
     }
+    # DATABASES = {
+    #     "default": {
+    #         "ENGINE": "django.db.backends.postgresql",
+    #         "NAME": env("DB_NAME"),
+    #         "USER": env("DB_USER"),
+    #         "PASSWORD": env("DB_PASSWORD"),
+    #         "HOST": env("DB_HOST"),
+    #         "PORT": env("DB_PORT"),
+    #     }
+    # }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
