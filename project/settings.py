@@ -2,6 +2,7 @@ from environ import Env
 import os
 from pathlib import Path
 import cloudinary
+import dj_database_url
 
 env = Env()
 Env.read_env()
@@ -84,21 +85,13 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 
-if ENVIRONMENT == "development":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-else:
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=env("DATABASE_URL"),
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=env("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
     # DATABASES = {
     #     "default": {
     #         "ENGINE": "django.db.backends.postgresql",
