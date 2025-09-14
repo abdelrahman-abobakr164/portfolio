@@ -8,7 +8,6 @@ env = Env()
 Env.read_env()
 ENVIRONMENT = env("ENVIRONMENT", default="production")
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,21 +18,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
+ALLOWED_HOSTS = ['*']
+
 if ENVIRONMENT == "development":
     DEBUG = True
 else:
-    ALLOWED_HOSTS = ['*']
     DEBUG = False
 
-if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = [env('CSRF_TRUSTED_ORIGINS', default="https://eager-badly-crayfish.ngrok-free.app")]
-else:
-    CSRF_TRUSTED_ORIGINS = ["https://eager-badly-crayfish.ngrok-free.app"]
+
 
 cloudinary.config( 
-    cloud_name = os.getenv("CLOUD_NAME"), 
-    api_key = os.getenv("CLOUDINARY_API_KEY"), 
-    api_secret = os.getenv("CLOUDINARY_API_SECRET") 
+    cloud_name = env("CLOUD_NAME"), 
+    api_key = env("CLOUDINARY_API_KEY"), 
+    api_secret = env("CLOUDINARY_API_SECRET") 
 )
 
 
@@ -86,14 +83,21 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-
-DATABASES = {
-    "default": dj_database_url.config(
-        default=env("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+if ENVIRONMENT == "development":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=env("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
 
 
 # Password validation

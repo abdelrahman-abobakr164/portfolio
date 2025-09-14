@@ -27,13 +27,15 @@ django-rosetta==0.10.1
 django-smart-selects==1.7.2
 django-social-share==2.3.0
 djangorestframework==3.16.1
-gunicorn==23.0.0
 environ==1.0
 facebook_business==22.0.5
 fastapi==0.116.1
+gunicorn==23.0.0
 idna==3.10
+packaging==25.0
 paypalrestsdk==1.13.3
 phonenumbers==8.12.56
+pillow==11.3.0
 psycopg2==2.9.10
 psycopg2-binary==2.9.10
 PyJWT==2.10.1
